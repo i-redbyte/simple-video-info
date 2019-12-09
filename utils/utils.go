@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -26,7 +25,7 @@ func ReturnError(w http.ResponseWriter, err error, code int) {
 	Respond(w, ErrorMessage(err.Error()))
 }
 
-func UploadFile(file multipart.File, handler *multipart.FileHeader) error {
+func UploadFileAndGetPath(file multipart.File, handler *multipart.FileHeader) (string, error) {
 	defer func() {
 		err := file.Close()
 		if err != nil {
@@ -36,14 +35,14 @@ func UploadFile(file multipart.File, handler *multipart.FileHeader) error {
 	currentDir, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
-		return err
+		return "", err
 	}
 	path := filepath.Join(currentDir, "videos")
-	fmt.Println("path", path)
+
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		er := os.MkdirAll(path, os.ModePerm)
 		if er != nil {
-			return err
+			return "", err
 		}
 	}
 	fileName := handler.Filename
@@ -54,7 +53,7 @@ func UploadFile(file multipart.File, handler *multipart.FileHeader) error {
 	newFile, err := os.Create(filepath.Join(path, fileName))
 	if err != nil {
 		log.Println(err)
-		return err
+		return "", err
 	}
 	defer func() {
 		err := newFile.Close()
@@ -65,7 +64,7 @@ func UploadFile(file multipart.File, handler *multipart.FileHeader) error {
 	fileBytes, err := ioutil.ReadAll(file)
 	_, err = newFile.Write(fileBytes)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return path, nil
 }
