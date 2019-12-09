@@ -26,7 +26,7 @@ func ReturnError(w http.ResponseWriter, err error, code int) {
 	Respond(w, ErrorMessage(err.Error()))
 }
 
-func UploadFile(filePath string, file multipart.File, handler *multipart.FileHeader) error {
+func UploadFile(file multipart.File, handler *multipart.FileHeader) error {
 	defer func() {
 		err := file.Close()
 		if err != nil {
@@ -38,7 +38,7 @@ func UploadFile(filePath string, file multipart.File, handler *multipart.FileHea
 		log.Println(err)
 		return err
 	}
-	path := filepath.Join(currentDir, "resources", filePath)
+	path := filepath.Join(currentDir, "videos")
 	fmt.Println("path", path)
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		er := os.MkdirAll(path, os.ModePerm)
