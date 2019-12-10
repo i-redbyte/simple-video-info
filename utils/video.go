@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/imkira/go-libav/avcodec"
 	"github.com/imkira/go-libav/avformat"
 	"github.com/imkira/go-libav/avutil"
@@ -85,14 +86,14 @@ func GetVideoInfo(ctx *context) m.Info {
 				Width:    stream.CodecContext().Width(),
 				Height:   stream.CodecContext().Height(),
 				BitRate:  stream.CodecContext().BitRate(),
-				Duration: stream.Duration(),
+				Duration: fmt.Sprint(stream.Duration()),
 			}
 			info.Video = *video
 		case avutil.MediaTypeAudio:
 			audio := &m.Audio{
 				Name:     ctx.decAudioCodec.Codec().Name(),
 				BitRate:  stream.CodecContext().BitRate(),
-				Duration: stream.Duration(),
+				Duration: fmt.Sprint(stream.Duration()),
 			}
 			info.Audio = *audio
 		}
