@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	u "simple-video-server/utils"
+	u "simple-video-info/utils"
 )
 
 // 100 << 20 == 100Mb
@@ -40,7 +40,6 @@ var UploadVideo = func(w http.ResponseWriter, r *http.Request) {
 	defer ctx.Free()
 
 	u.OpenInput(ctx, filepath.Join(path, handler.Filename))
-	u.Respond(w, struct {
-		Success bool `json:"success"`
-	}{Success: true})
+	respond := u.GetVideoInfo(ctx)
+	u.Respond(w, respond)
 }

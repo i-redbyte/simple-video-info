@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	c "simple-video-server/controllers"
+	c "simple-video-info/controllers"
 )
 
 func main() {
