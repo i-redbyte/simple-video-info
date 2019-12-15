@@ -27,38 +27,22 @@ func OpenInput(ctx *context, fileName string) {
 		log.Fatalf("Failed to find stream info: %v\n", err)
 	}
 	ctx.decFmt.Dump(0, fileName, false)
-	openInputVideoStream(ctx)
+	openVideoStream(ctx)
+	openAudioStream(ctx)
 }
 
-func openInputVideoStream(ctx *context) {
+func openVideoStream(ctx *context) {
 	var err error
-
 	if ctx.decVideoStream = videoStream(ctx.decFmt); ctx.decVideoStream == nil {
 		log.Fatalf("Could not find a video stream. Aborting...\n")
 	}
-
-	if ctx.decAudioStream = audioStream(ctx.decFmt); ctx.decAudioStream == nil {
-		log.Println("Could not find a audio stream. Aborting...")
-	}
-
 	codecCtx := *ctx.decVideoStream.CodecContext()
-	audioCodecCtx := *ctx.decAudioStream.CodecContext()
-
 	codec := avcodec.FindDecoderByID(codecCtx.CodecID())
-	audioCodec := avcodec.FindDecoderByID(audioCodecCtx.CodecID())
-
 	if codec == nil {
 		log.Fatalf("Could not find decoder: %v\n", codecCtx.CodecID())
 	}
 
-	if audioCodec == nil {
-		log.Fatalf("Could not find decoder: %v\n", audioCodecCtx.CodecID())
-	}
-
 	if ctx.decVideoCodec, err = avcodec.NewContextWithCodec(codec); err != nil {
-		log.Fatalf("Failed to create codec context: %v\n", err)
-	}
-	if ctx.decAudioCodec, err = avcodec.NewContextWithCodec(audioCodec); err != nil {
 		log.Fatalf("Failed to create codec context: %v\n", err)
 	}
 	//TODO: go build -tags ffmpeg33
@@ -73,6 +57,23 @@ func openInputVideoStream(ctx *context) {
 	}
 
 	GetVideoInfo(ctx)
+}
+
+func openAudioStream(ctx *context) {
+	if ctx.decAudioStream = audioStream(ctx.decFmt); ctx.decAudioStream == nil {
+		log.Println("Could not find a audio stream. Aborting...")
+		return
+	}
+	audioCodecCtx := *ctx.decAudioStream.CodecContext()
+	audioCodec := avcodec.FindDecoderByID(audioCodecCtx.CodecID())
+	if audioCodec == nil {
+		log.Printf("Could not find decoder: %v\n", audioCodecCtx.CodecID())
+	}
+	var err error
+	if ctx.decAudioCodec, err = avcodec.NewContextWithCodec(audioCodec); err != nil {
+		log.Printf("Failed to create codec context: %v\n", err)
+	}
+
 }
 
 func GetVideoInfo(ctx *context) m.Info {
