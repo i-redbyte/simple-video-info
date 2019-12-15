@@ -55,8 +55,6 @@ func openVideoStream(ctx *context) {
 	if err := ctx.decVideoCodec.OpenWithCodec(codec, nil); err != nil {
 		log.Fatalf("Failed to open codec: %v\n", err)
 	}
-
-	GetVideoInfo(ctx)
 }
 
 func openAudioStream(ctx *context) {
@@ -73,10 +71,10 @@ func openAudioStream(ctx *context) {
 	if ctx.decAudioCodec, err = avcodec.NewContextWithCodec(audioCodec); err != nil {
 		log.Printf("Failed to create codec context: %v\n", err)
 	}
-
 }
 
-func GetVideoInfo(ctx *context) m.Info {
+func GetVideoInfo(ctx *context, fileName string) m.Info {
+	OpenInput(ctx, fileName)
 	info := &m.Info{}
 	for _, stream := range ctx.decFmt.Streams() {
 

@@ -37,8 +37,6 @@ var UploadVideo = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer ctx.Free()
-
-	u.OpenInput(ctx, filepath.Join(path, handler.Filename))
-	respond := u.GetVideoInfo(ctx)
+	respond := u.GetVideoInfo(ctx, filepath.Join(path, handler.Filename))
 	u.Respond(w, respond)
 }
