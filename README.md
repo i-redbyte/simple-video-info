@@ -7,7 +7,7 @@ How run app
 ======
 - First, install ffmpeg 3.x libraries on your system.
 
-(For example for Mac OS:**brew install sy1vain/ffmpeg/ffmpeg@3.4**)
+  (For example for Mac OS:**brew install sy1vain/ffmpeg/ffmpeg@3.4**)
 
 - For run: go run -tags ffmpeg33 *.go
 
